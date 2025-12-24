@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎄 Merry Christmas! 🎄</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #0a1628, #1a2a4a);
+            height: 100vh;
+            position: relative;
+            touch-action: pan-y;
+        }
+        
+        .clk{
+            font-size: 15px;
+            display: flex;
+            justify-content: flex-end;
+            color: rgb(32, 209, 209);
+            padding-top: 80px;
+            padding-right: 5px;
+            text-shadow: 8px 8px 20px rgb(11, 44, 44);
+        }
+        
+        #snowCanvas {
+            position: fixed;    
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .lyrics-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 20px 0;
+            mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+        }
+
+        .lyrics {
+            position: absolute;
+            width: 100%;
+            animation: scroll 52s linear infinite;
+        }
+
+        .lyric-line {
+            text-align: center;
+            padding: 12px;
+            font-size: 18px;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
+            line-height: 2;
+            font-weight: 300;
+        }
+
+        .lyric-line.title {
+            font-size: 26px;
+            font-weight: bold;
+            color: gold;
+            margin: 30px 0;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .lyric-line.empty {
+            height: 40px;
+        }
+
+        @keyframes scroll {
+            from {
+                transform: translateY(100vh);
+            }
+            to {
+                transform: translateY(-100%);
+            }
+        }
+
+        .button-container {
+            margin-bottom: 100px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+            transition: all 0.3s ease;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            box-shadow: 0 3px 10px rgba(46, 204, 113, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 90%;
+            animation: slideUp 0.4s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            color: #2ecc71;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .modal-content img {
+            width: 240px;
+            height: 250px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .modal-content p {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 22px;
+            z-index: 3;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .music-control:active {
+            transform: scale(0.9);
+        }
+
+        @media (max-width: 480px) {
+            .lyric-line {
+                font-size: 16px;
+            }
+            
+            .lyric-line.title {
+                font-size: 22px;
+            }
+            
+            button {
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    
+    <canvas id="snowCanvas"></canvas>
+    
+    <button class="music-control" id="musicToggle">🔊</button>
+    <p class="clk">Click to start</p>
+    <div class="content">
+        <div class="lyrics-container">
+            <div class="lyrics" id="lyrics">
+                <div class="lyric-line empty"></div>
+                <div class="lyric-line empty"></div>
+                <div class="lyric-line title">🎄 Jingle Bell Rock 🎄</div>
+                <div class="lyric-line empty">[Verse 1:]</div>
+                <div class="lyric-line">Jingle bell, jingle bell, jingle bell rock</div>
+                <div class="lyric-line">Jingle bells swing and jingle bells ring</div>
+                <div class="lyric-line">Snowin' and blowin' up bushels of fun</div>
+                <div class="lyric-line">Now the jingle hop has begun</div>
+                <div class="lyric-line empty">[Verse 2:]</div>
+                <div class="lyric-line">Jingle bell, jingle bell, jingle bell rock</div>
+                <div class="lyric-line">Jingle bells chime in jingle bell time</div>
+                <div class="lyric-line">Dancin' and prancin' in Jingle Bell Square</div>
+                <div class="lyric-line">In the frosty air</div>
+                <div class="lyric-line empty">[Bridge:]</div>
+                <div class="lyric-line">What a bright time, it's the right time</div>
+                <div class="lyric-line">To rock the night away</div>
+                <div class="lyric-line">IJingle bell time is a swell time</div>
+                <div class="lyric-line">To go glidin' in a one-horse sleigh</div>
+                <div class="lyric-line">✨ ━━━━━━━━ ✨</div>
+                <div class="lyric-line empty"></div>
+                <div class="lyric-line empty"></div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button onclick="showQR()">📱 GCash Gift</button>
+        </div>
+    </div>
+
+    <div class="modal" id="qrModal" onclick="closeQR()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2>🎁 Send GCash Gift</h2>
+            <img src="/GCash-MyQR-22122025162612.PNG.jpg" alt="GCash QR">
+            <p>Scan to send your Christmas gift 💝</p>
+            <button class="close-btn" onclick="closeQR()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const snowflakes = [];
+        
+        class Snowflake {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height;
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = -10;
+                this.size = Math.random() * 3 + 2;
+                this.speed = Math.random() * 1.5 + 0.8;
+                this.drift = Math.random() * 1 - 0.5;
+                this.opacity = Math.random() * 0.5 + 0.5;
+                this.angle = Math.random() * 360;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = 'white';
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+                
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle * Math.PI / 180);
+                
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size * 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                for (let i = 0; i < 6; i++) {
+                    ctx.save();
+                    ctx.rotate((Math.PI * 2 / 6) * i);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(0, -this.size * 2);
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = this.size * 0.2;
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(0, -this.size);
+                    ctx.lineTo(-this.size * 0.5, -this.size * 1.3);
+                    ctx.moveTo(0, -this.size);
+                    ctx.lineTo(this.size * 0.5, -this.size * 1.3);
+                    ctx.lineWidth = this.size * 0.15;
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                }
+                
+                ctx.restore();
+            }
+
+            update() {
+                this.y += this.speed;
+                this.x += this.drift;
+                this.angle += 0.5;
+                
+                if (this.y > canvas.height + 10) {
+                    this.reset();
+                }
+                
+                if (this.x < -10) this.x = canvas.width + 10;
+                if (this.x > canvas.width + 10) this.x = -10;
+            }
+        }
+
+        for (let i = 0; i < 80; i++) {
+            snowflakes.push(new Snowflake());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            snowflakes.forEach(flake => {
+                flake.update();
+                flake.draw();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        const audio = new Audio();
+        let isPlaying = false;
+
+        audio.src = 'Jingle Bell Rock.Wav.wav';
+        audio.loop = true;
+        audio.volume = 0.4;
+
+        function saveState() {
+            try {
+                const state = {
+                    isPlaying: isPlaying,
+                    currentTime: audio.currentTime,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('xmasState', JSON.stringify(state));
+            } catch (e) {}
+        }
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('xmasState');
+                if (saved) {
+                    const state = JSON.parse(saved);
+                    const timePassed = (Date.now() - state.timestamp) / 1000;
+                    
+                    if (audio.duration) {
+                        audio.currentTime = (state.currentTime + timePassed) % audio.duration || 0;
+                    }
+                    
+                    if (state.isPlaying) {
+                        audio.play().then(() => {
+                            isPlaying = true;
+                            document.getElementById('musicToggle').textContent = '🔊';
+                        }).catch(() => {});
+                    }
+                }
+            } catch (e) {}
+        }
+
+        window.addEventListener('beforeunload', saveState);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                saveState();
+            } else {
+                loadState();
+            }
+        });
+
+        setInterval(saveState, 5000);
+
+        function toggleMusic() {
+            const btn = document.getElementById('musicToggle');
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                btn.textContent = '🔇';
+            } else {
+                audio.play().catch(() => {});
+                isPlaying = true;
+                btn.textContent = '🔊';
+            }
+            saveState();
+        }
+        
+        document.getElementById('musicToggle').addEventListener('click', toggleMusic);
+
+        window.addEventListener('load', function() {
+            const saved = localStorage.getItem('xmasState');
+            
+            if (saved) {
+                audio.addEventListener('loadedmetadata', loadState, { once: true });
+            } else {
+                setTimeout(() => {
+                    audio.play().then(() => {
+                        isPlaying = true;
+                        document.getElementById('musicToggle').textContent = '🔊';
+                        saveState();
+                    }).catch(() => {
+                        document.addEventListener('click', function autoStart() {
+                            if (!isPlaying) {
+                                toggleMusic();
+                            }
+                        }, { once: true });
+                    });
+                }, 500);
+            }
+        });
+
+        function showQR() {
+            document.getElementById('qrModal').classList.add('active');
+        }
+
+        function closeQR() {
+            document.getElementById('qrModal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
